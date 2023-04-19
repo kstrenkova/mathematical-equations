@@ -6,6 +6,15 @@ First, download zip file of this repository. Open Blender (3.3+) and go to _Edit
 
 You can find the add-on on the right side of 3D Viewport, labeled as _Text Tool_.
 
+# Supported Latex Commands
+This version of addon supports only a limited number of Latex commands. To make it easier to navigate, all the supported commands are listed below.
+- most used mathematical symbols
+- indexes and exponents (x^2, x_2, x^{\alpha}...)
+- \sqrt[]{} \sqrt{}
+- \sum_{}^{}, \prod_{}^{}
+- \frac{}{}
+- \begin{matrix} ... \end{matrix} -- other versions of matrices (_pmatrix_, _Pmatrix_, _bmatrix_...) are also supported
+
 # Usage
 Add-on has six parameters that affect the generation of mathematical equations.
 
