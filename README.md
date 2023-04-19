@@ -1,4 +1,4 @@
-# mathematical-equations
+# Mathematical Equation Generator
 This repository contains Blender addon for generating mathematical equations. Feel free to use it for your Blender project.
 
 # Installation
