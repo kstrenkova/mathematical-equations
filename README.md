@@ -7,7 +7,7 @@ First, download zip file of this repository. Open Blender (3.3+) and go to _Edit
 You can find the add-on on the right side of 3D Viewport, labeled as _Text Tool_.
 
 # Supported Latex Commands
-This version of addon supports only a limited number of Latex commands. To make it easier to navigate, all the supported commands are listed below.
+This version of addon supports only a limited number of Latex commands. To make it easier to navigate, all the supported features are listed below.
 - most used mathematical symbols
 - indexes and exponents (x^2, x_2, x^{\alpha}...), plus the use of both of them at the same time (x_1^2)
 - command spaces (\! \; \, \quad...)
