@@ -63,7 +63,7 @@ class OBJECT_PT_ME(bpy.types.Panel):
     bl_idname = "OBJECT_PT_ME"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = 'Text Tool'
+    bl_category = 'Equations'
     
     # drawing main panel
     def draw(self, context):  
