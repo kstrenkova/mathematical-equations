@@ -331,23 +331,13 @@ def gen_calculate(param, text_scale, levels):
 
 
 # function moves sum symbol according to given parameters
-def gen_move_sum(context, param, collection, text_scale, levels, sum):
-    
-    # getting last added exponent or index level
-    mode = levels.ei_array[len(levels.ei_array) - 1]
+def gen_move_sum(context, param, collection, sum):
     
     # save sum symbol
     sum_symbol = bpy.data.objects[sum.name]
     
     # get corners of bounding box
     bbox = [sum_symbol.matrix_world @ Vector(corner) for corner in sum_symbol.bound_box]
-    
-    # scale objects
-    for obj in bpy.data.collections[collection].all_objects:
-        # scale text only
-        if "Text" in obj.name:
-            obj.scale.x = param.scale
-            obj.scale.y = param.scale
         
     # parameters of objects in collection
     min_x = gen_min_x(context, collection)
@@ -360,7 +350,7 @@ def gen_move_sum(context, param, collection, text_scale, levels, sum):
         sum.array.append(obj.name)
         # move object depending on index or exponent mode
         obj.location.x += bbox[0].x - min_x
-        if mode == "exp":
+        if "SumUpCollection" in collection:
             obj.location.y += bbox[2].y - min_y + 0.25 * param.scale
         else:
             obj.location.y += bbox[0].y - max_y - 0.25 * param.scale
@@ -387,15 +377,17 @@ def gen_center_sum(context, sum, collection, exp_ix_width, sum_width):
         
 
 # move sum symbol if index or exponent is longer then symbol
-def gen_fin_sum(context, sum, fin_width):
+def gen_fin_sum(context, sum, up_collection, down_collection):
     # save sum symbol
     sum_symbol = bpy.data.objects[sum.name]
     
     # get corners of bounding box
     bbox = [sum_symbol.matrix_world @ Vector(corner) for corner in sum_symbol.bound_box]
     
-    # find bigger width
-    fin_width = max(fin_width, bbox[4].x)  # sum symbol width
+    # find biggest width
+    up_width = gen_group_width(context, up_collection)
+    down_width = gen_group_width(context, down_collection)
+    fin_width = max(up_width, down_width, bbox[4].x)  # sum symbol width
     diff = fin_width - bbox[4].x
     
     # index or exponent is longer than sum symbol

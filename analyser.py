@@ -42,9 +42,11 @@ class Levels:
         
 # class fot sum        
 class Sum:
-    def __init__(self, bool, name, array):
+    def __init__(self, bool, name, up_collection, down_collection, array):
         self.bool = bool
         self.name = name
+        self.up_collection = up_collection 
+        self.down_collection = down_collection
         self.array = array
         
         
@@ -207,7 +209,7 @@ class SyntaxAnalyser(LexicalAnalyser):
         self.font_path = font_path
         self.font = []  # default_font, unicode_font
         self.sqrt = False
-        self.sum = Sum(False, "", [])
+        self.sum = Sum(False, "", "", "", [])
         self.base_collection = ""
         self.current_collection = ""
         self.parameters = Parameters(text_scale, 0.0, 0.0, 0.0)
@@ -349,7 +351,6 @@ class SyntaxAnalyser(LexicalAnalyser):
                 else:
                     print("Error, missing closing bracket to command!")
 
-        print("Error in the syntax of enviroment 'matrix'!")
         return False
 
     # <MATRIX> -> <COMMAND> <MORE_MATRIX>
@@ -407,7 +408,6 @@ class SyntaxAnalyser(LexicalAnalyser):
             self.return_token(token)
             return True
 
-        print("Error in the syntax of enviroment 'matrix'!")
         return False
     
     # <MORE_MATRIX> -> <MATRIX> <MORE_MATRIX>
@@ -514,7 +514,6 @@ class SyntaxAnalyser(LexicalAnalyser):
                 else:
                     print("Error, missing closing bracket to command!")
 
-        print("Error in the syntax of command 'sqrt'!")
         return False
     
     # function returns if sequence of tokens is a fraction figure
@@ -615,15 +614,9 @@ class SyntaxAnalyser(LexicalAnalyser):
                 self.levels.frac -= 1                 
                     
                 return True
-            else:
-                # remove denominator collection if false         
-                bpy.data.collections.remove(den_coll)
-                print("Error in the syntax of command 'frac'!")            
+            else:         
                 return False
-                 
-        # remove numerator collection if false         
-        bpy.data.collections.remove(num_coll) 
-        print("Error in the syntax of command 'frac'!")           
+                           
         return False
     
     # <SUM> -> index_exponent
@@ -647,8 +640,39 @@ class SyntaxAnalyser(LexicalAnalyser):
             self.return_token(token)
             self.sum.bool = True  # index and exponent for sum
             
+            # saving parent collection to bind children collections to
+            parent_collection = self.current_collection
+            
+            # collection for upper indexes
+            up_coll = bpy.data.collections.new("SumUpCollection")
+            bpy.data.collections[parent_collection].children.link(up_coll)
+            self.sum.up_collection = up_coll.name
+
+            # collection for upper indexes
+            down_coll = bpy.data.collections.new("SumDownCollection")
+            bpy.data.collections[parent_collection].children.link(down_coll)
+            self.sum.down_collection = down_coll.name
+            
+            if token.type == "UNDERSCORE":
+                self.current_collection = down_coll.name
+            else:
+                self.current_collection = up_coll.name    
+            
             # index_exponent
             if self.sa_const():
+                
+                # move sum limits
+                gen_move_sum(self.context, self.parameters, up_coll.name, self.sum)
+                gen_move_sum(self.context, self.parameters, down_coll.name, self.sum)
+                
+                space = 0.1 * self.parameters.scale
+                self.parameters.width = gen_fin_sum(self.context, self.sum, up_coll.name, down_coll.name) + space
+                
+                # join denominator collection into parent collection
+                gen_join_collections(self.context, up_coll, parent_collection)
+                gen_join_collections(self.context, down_coll, parent_collection)
+                self.current_collection = parent_collection  # set current collection
+                
                 # clear variables for sum
                 self.sum.bool = False 
                 self.sum.array = []
@@ -678,9 +702,13 @@ class SyntaxAnalyser(LexicalAnalyser):
             
             # special sum exponent or index
             if self.sum.bool:
-                gen_calculate(self.parameters, self.text_scale, self.levels)
-                gen_move_sum(self.context, self.parameters, exp_ix_coll.name, self.text_scale, self.levels, self.sum)  
-            elif not brackets:
+                if token.type == "UNDERSCORE":
+                    self.current_collection = self.sum.down_collection
+                else:
+                    self.current_collection = self.sum.up_collection
+                    
+            # move when its not already moved
+            if not brackets:
                 gen_calculate(self.parameters, self.text_scale, self.levels)
                 gen_position(self.parameters, False)
             self.levels.ei_array.pop()
@@ -699,11 +727,7 @@ class SyntaxAnalyser(LexicalAnalyser):
             
             # calculate final width
             sec_width = gen_group_width(self.context, self.current_collection)
-            fin_width = max(first_width, sec_width)
-            
-            # calculate final width for sum symbol
-            if self.sum.bool:
-                fin_width = gen_fin_sum(self.context, self.sum, fin_width)      
+            fin_width = max(first_width, sec_width)    
             
             self.parameters.width = fin_width + 0.1 * self.parameters.scale
             
@@ -712,14 +736,9 @@ class SyntaxAnalyser(LexicalAnalyser):
             return False
         
         else:
-            self.return_token(token)
-            
-            # special sum exponent or index
-            if self.sum.bool:
-                gen_calculate(self.parameters, self.text_scale, self.levels)
-                gen_move_sum(self.context, self.parameters, exp_ix_coll.name, self.text_scale, self.levels, self.sum)  
+            self.return_token(token) 
             # move when its not already moved
-            elif not brackets:
+            if not brackets:
                 gen_calculate(self.parameters, self.text_scale, self.levels)
                 gen_position(self.parameters, not self.levels.exp_ix)
             self.levels.ei_array.pop()
@@ -775,7 +794,6 @@ class SyntaxAnalyser(LexicalAnalyser):
         
             return self.is_both_ei(mode, False, self.parameters.width, parent_collection, exp_ix_coll)
         
-        print("Error in creating exponent of index!")
         return False
 
     # <CONST> -> text
