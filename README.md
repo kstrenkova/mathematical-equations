@@ -2,7 +2,7 @@
 This repository contains Blender add-on for generating mathematical equations based on mathematical notation of language Latex. Feel free to use it for your Blender project.
 
 # Installation
-First, download zip file of this repository. Open Blender (3.3+) and go to _Edit->Preferences->Add-ons_. Click on the _Install_ button and find path to the downloaded add-on. Choose file "mathematical-equations-main.zip" and click on the _Install Add-on_ button. A new field called _Mathematical Equation Generator_ should appear in the _Add-ons_ section. To activate the add-on please check the box next to it. That concludes the installation.
+First, download zip file of this repository. Open Blender (3.3+) and go to _Edit->Preferences->Add-ons_. Click on the _Install_ button and find path to the downloaded add-on. Choose file "mathematical-equations-main.zip" and click on the _Install Add-on_ button. A new field called _Mathematical Equation Generator_ should appear in the _Add-ons_ section. It can take time to appear. To activate the add-on please check the box next to it. That concludes the installation.
 
 You can find the add-on on the right side of 3D Viewport, labeled as _Equations_.
 
