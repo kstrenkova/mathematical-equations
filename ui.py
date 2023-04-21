@@ -157,11 +157,13 @@ all_classes = [
 def register():
     for cls in all_classes:
         bpy.utils.register_class(cls)
-        bpy.types.Scene.custom_prop = bpy.props.PointerProperty(type=Custom_PT)
+    
+    bpy.types.Scene.custom_prop = bpy.props.PointerProperty(type=Custom_PT)
 
 
 def unregister():
     for cls in all_classes:
         bpy.utils.unregister_class(cls)
-        del bpy.types.Scene.custom_prop
+    
+    del bpy.types.Scene.custom_prop
  
