@@ -6,7 +6,7 @@ First, download zip file of this repository. Open Blender (3.3+) and go to _Edit
 
 To show sidebar press _N_ key. You can find the add-on on the right side of 3D Viewport, labeled as _Equations_. Image for reference below.
 
-![alt text](https://github.com/xstren00/mathematical-equations/)
+![alt text](https://github.com/xstren00/mathematical-equations/main/img/mathematical_eqeuations.png)
 
 # Supported Latex Commands
 This version of addon supports only a limited number of Latex commands. To make it easier to navigate, all the supported features are listed below.
