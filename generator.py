@@ -260,7 +260,7 @@ def gen_frac_line(context, param, x_pos):
     # location of 3D cursor
     cursor_3D = bpy.context.scene.cursor.location
     
-    # set origin for sqrt
+    # set origin for fraction line
     bpy.context.scene.cursor.location += Vector((0.0, 0.0, 0.0))
     bpy.ops.object.origin_set(type='ORIGIN_CURSOR')
     
